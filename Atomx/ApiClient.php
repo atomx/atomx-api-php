@@ -69,7 +69,8 @@ class ApiClient {
     {
         return [
             'exceptions' => false,
-            'timeout'    => 30
+            'timeout'    => 30,
+            'connect_timeout' => 10
         ];
     }
 
