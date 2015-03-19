@@ -67,7 +67,10 @@ class ApiClient {
 
     protected function getDefaultOptions()
     {
-        return ['exceptions' => false];
+        return [
+            'exceptions' => false,
+            'timeout'    => 30
+        ];
     }
 
     protected function handleResponse(Response $response)
