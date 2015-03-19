@@ -1,7 +1,7 @@
 <?php namespace Atomx;
 
 
-interface TokenStore {
+interface AccountStore {
     public function getUsername();
     public function getPassword();
     public function getToken();

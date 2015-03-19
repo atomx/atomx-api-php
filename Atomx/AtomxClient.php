@@ -11,16 +11,16 @@ class AtomxClient extends ApiClient {
     protected $id;
 
     /**
-     * @var TokenStore Store the token for the application
+     * @var AccountStore Store the token for the application
      */
-    private $tokenStore;
+    private $accountStore;
     private $shouldSendToken = true;
 
-    function __construct(TokenStore $tokenStore, $id = null)
+    function __construct(AccountStore $accountStore, $id = null)
     {
         parent::__construct();
 
-        $this->tokenStore = $tokenStore;
+        $this->accountStore = $accountStore;
         $this->id = $id;
     }
 
@@ -61,8 +61,8 @@ class AtomxClient extends ApiClient {
         $this->shouldSendToken = false;
 
         $response = $this->get('login', [
-            'email'    => $this->tokenStore->getUsername(),
-            'password' => $this->tokenStore->getPassword()
+            'email'    => $this->accountStore->getUsername(),
+            'password' => $this->accountStore->getPassword()
         ]);
 
         $this->shouldSendToken = true;
@@ -73,14 +73,14 @@ class AtomxClient extends ApiClient {
 
         $token = $response['auth_tkt'];
 
-        $this->tokenStore->storeToken($token);
+        $this->accountStore->storeToken($token);
 
         return $token;
     }
 
     private function getToken()
     {
-        $token = $this->tokenStore->getToken();
+        $token = $this->accountStore->getToken();
 
         if ($token !== null) {
             return $token;

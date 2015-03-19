@@ -38,16 +38,16 @@ class ApiClient {
 
     public function request($method, $url, $options = [])
     {
-        $options = $this->getOptions($options);
-
-        $request = $this->client->createRequest($method, $url, $options);
+        $request = $this->client->createRequest($method, $url, $this->getOptions($options));
 
         try {
             $response = $this->client->send($request);
-         } catch (RequestException $e) {
+        }
+        catch (RequestException $e) {
             $response = $e->hasResponse() ? $e->getResponse() : '';
 
             // TODO: Log this info, do not put it in the exception (as it might leak in a dev version etc)
+
             throw new Exception('Request failed: ' . $e->getRequest() . "\nResponse: " . $response);
         }
 
@@ -61,6 +61,7 @@ class ApiClient {
     private function getOptions($options)
     {
         $defaultOptions = $this->getDefaultOptions();
+
         // TODO: Use a merge that overrides already set values
         $options = array_merge_recursive($defaultOptions, $options);
 
@@ -106,6 +107,11 @@ class ApiClient {
 
         throw new InvalidArgumentException("API: Field $name does not exist in class.");
     }
+
+    private function isWritable($name)
+    {
+        return array_key_exists($name, $this->writable);
+    }
     */
 
     public function update($fields)
@@ -119,12 +125,4 @@ class ApiClient {
         return $this->put($this->endpoint, $this->fields);
     }
 
-    /**
-     * @param $name
-     * @return bool
-     */
-    private function isWritable($name)
-    {
-        return array_key_exists($name, $this->writable);
-    }
 }
