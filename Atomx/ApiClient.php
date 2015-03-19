@@ -1,10 +1,8 @@
 <?php namespace Atomx;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Response;
-use InvalidArgumentException;
 
 class ApiClient {
     protected $endpoint;

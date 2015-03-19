@@ -1,6 +1,5 @@
 <?php namespace Atomx;
 
-use Exception;
 use GuzzleHttp\Message\Response;
 /*
  * TODO: Ability to sync back from atomx to DA
@@ -68,7 +67,7 @@ class AtomxClient extends ApiClient {
         $this->shouldSendToken = true;
 
         if ($response['success'] !== true)
-            throw new Exception('Unable to login into Atomx API. Error: ' . $response['error']);
+            throw new ApiException('Unable to login into Atomx API. Error: ' . $response['error']);
 
 
         $token = $response['auth_tkt'];
