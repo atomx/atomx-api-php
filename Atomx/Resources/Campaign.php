@@ -1,5 +1,6 @@
-<?php namespace Atomx;
+<?php namespace Atomx\Resources;
 
+use Atomx\AtomxClient;
 use InvalidArgumentException;
 
 class Campaign extends AtomxClient {

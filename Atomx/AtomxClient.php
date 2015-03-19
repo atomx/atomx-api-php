@@ -16,12 +16,12 @@ class AtomxClient extends ApiClient {
     private $accountStore;
     private $shouldSendToken = true;
 
-    function __construct(AccountStore $accountStore, $id = null)
+    function __construct(AccountStore $accountStore, $fields = [])
     {
         parent::__construct();
 
         $this->accountStore = $accountStore;
-        $this->id = $id;
+        $this->fields       = $fields;
     }
 
     protected function handleResponse(Response $response)
@@ -45,7 +45,7 @@ class AtomxClient extends ApiClient {
 
     protected function getDefaultOptions()
     {
-        $options = [];
+        $options = parent::getDefaultOptions();
 
         if ($this->shouldSendToken)
             $options['cookies'] = ['auth_tkt' => $this->getToken()];

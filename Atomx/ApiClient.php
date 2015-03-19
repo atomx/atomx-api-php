@@ -48,7 +48,7 @@ class ApiClient {
 
             // TODO: Log this info, do not put it in the exception (as it might leak in a dev version etc)
 
-            throw new Exception('Request failed: ' . $e->getRequest() . "\nResponse: " . $response);
+            throw new ApiException('Request failed: ' . $e->getRequest() . "\nResponse: " . $response);
         }
 
         return $this->handleResponse($response);
@@ -70,7 +70,7 @@ class ApiClient {
 
     protected function getDefaultOptions()
     {
-        return [];
+        return ['exceptions' => false];
     }
 
     protected function handleResponse(Response $response)
@@ -78,7 +78,7 @@ class ApiClient {
         if ($response->getStatusCode() == 200)
             return $response->getBody()->getContents();
 
-        throw new Exception('Request failed, received the following status: ' .
+        throw new ApiException('Request failed, received the following status: ' .
             $response->getStatusCode() . ' Body: ' . $response->getBody()->getContents());
     }
 
