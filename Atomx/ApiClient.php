@@ -10,7 +10,6 @@ class ApiClient {
 
     protected $client;
 
-    protected $writable = [];
     protected $fields = [];
 
     /**
@@ -80,47 +79,32 @@ class ApiClient {
             $response->getStatusCode() . ' Body: ' . $response->getBody()->getContents());
     }
 
-    /*j
     function __set($name, $value)
     {
-        if ($this->isWritable($name)) {
-            $field = $this->writable[$name];
-
-            $this->fields[$name] = $value;
-        }
-        else
-            throw new InvalidArgumentException("API: Field $name does not exist in class.");
+        $this->fields[$name] = $value;
     }
 
     function __get($name)
     {
-        if ($this->isWritable($name)) {
-            $field = $this->writable[$name];
-
-            if (isset($this->fields[$field]))
-                return $this->fields[$name];
-            else
-                return null;
-        }
-
-        throw new InvalidArgumentException("API: Field $name does not exist in class.");
+        if (isset($this->fields[$name]))
+            return $this->fields[$name];
+        else
+            return null;
     }
 
-    private function isWritable($name)
+    public function fill($fields)
     {
-        return array_key_exists($name, $this->writable);
-    }
-    */
-
-    public function update($fields)
-    {
-        // Fetch the fields and see what individual updates we can do with a single request
+        // TODO: Merge with the other fields
         $this->fields = $fields;
     }
 
-    public function commit()
+    public function update()
     {
         return $this->put($this->endpoint, $this->fields);
     }
 
+    public function create()
+    {
+        return $this->post($this->endpoint, $this->fields);
+    }
 }
