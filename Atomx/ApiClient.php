@@ -20,6 +20,11 @@ class ApiClient {
         $this->client = new Client(['base_url' => $this->apiBase]);
     }
 
+    public function clearFields()
+    {
+        $this->fields = [];
+    }
+
     /**
      * Query the API for a certain field
      */
@@ -47,6 +52,9 @@ class ApiClient {
 
             throw new ApiException('Request failed: ' . $e->getRequest() . "\nResponse: " . $response);
         }
+
+        // TODO: Be able to reuse the field? or create a new Client every time?
+        $this->clearFields();
 
         return $this->handleResponse($response);
     }
