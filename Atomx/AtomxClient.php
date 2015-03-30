@@ -1,13 +1,16 @@
 <?php namespace Atomx;
 
+use Atomx\Resources\Campaign;
+use Exception;
 use GuzzleHttp\Message\Response;
 /*
  * TODO: Ability to sync back from atomx to DA
  */
 
 class AtomxClient extends ApiClient {
-    protected $apiBase = 'http://api.atomx.com/v1/';
-    protected $id;
+    //protected $apiBase = 'http://api.atomx.com/v1/';
+    protected $apiBase = 'http://192.168.56.102:6543/v1/';
+    protected $id = null;
 
     /**
      * @var AccountStore Store the token for the application
@@ -15,12 +18,17 @@ class AtomxClient extends ApiClient {
     private $accountStore;
     private $shouldSendToken = true;
 
-    function __construct(AccountStore $accountStore, $fields = [])
+    function __construct(AccountStore $accountStore, $idOrFields = null)
     {
         parent::__construct();
 
         $this->accountStore = $accountStore;
-        $this->fields       = $fields;
+
+
+        if (is_array($idOrFields))
+            $this->fields = $idOrFields;
+        else if (is_numeric($idOrFields))
+            $this->id = $idOrFields;
     }
 
     protected function handleResponse(Response $response)
@@ -30,27 +38,12 @@ class AtomxClient extends ApiClient {
         return json_decode(parent::handleResponse($response), true);
     }
 
-
-    public function get($url, $options = [])
-    {
-        return parent::get($url, ['query' => $options]);
-    }
-
-
-    public function put($url, $fields = [])
-    {
-        return parent::put($url, ['json' => $fields]);
-    }
-
     protected function getDefaultOptions()
     {
         $options = parent::getDefaultOptions();
 
         if ($this->shouldSendToken)
             $options['cookies'] = ['auth_tkt' => $this->getToken()];
-
-        if (!is_null($this->id))
-            $options['query'] = ['id' => $this->id];
 
         return $options;
     }
@@ -59,7 +52,7 @@ class AtomxClient extends ApiClient {
     {
         $this->shouldSendToken = false;
 
-        $response = $this->get('login', [
+        $response = $this->getUrl('login', [
             'email'    => $this->accountStore->getUsername(),
             'password' => $this->accountStore->getPassword()
         ]);
@@ -69,8 +62,7 @@ class AtomxClient extends ApiClient {
         if ($response['success'] !== true)
             throw new ApiException('Unable to login into Atomx API. Error: ' . $response['error']);
 
-
-        $token = $response['auth_tkt'];
+        $token = $response['auth_tkt'] . '!userid_type:int';
 
         $this->accountStore->storeToken($token);
 
@@ -86,5 +78,31 @@ class AtomxClient extends ApiClient {
         }
 
         return $this->login();
+    }
+
+    public function update()
+    {
+        if (is_null($this->id))
+            throw new Exception('No id set to update!');
+
+        return $this->putUrl($this->endpoint, [
+            'query' => ['id' => $this->id],
+            'json'  => $this->fields
+        ]);
+    }
+
+    public function create()
+    {
+        return $this->post($this->fields);
+    }
+
+    public static function find($store, $id)
+    {
+        $campaign = new Campaign($store);
+
+        if (is_array($id))
+            $id = implode(',', $id);
+
+        return $campaign->get(['id' => $id]);
     }
 }

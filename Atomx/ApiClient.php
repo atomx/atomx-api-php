@@ -25,17 +25,40 @@ class ApiClient {
         $this->fields = [];
     }
 
-    /**
-     * Query the API for a certain field
-     */
-    public function get($url, $options = [])
+    // GET
+
+    public function get($options = [])
     {
-        return $this->request('get', $url, $options);
+        return $this->getUrl($this->endpoint, $options);
     }
 
-    public function put($url, $options = [])
+    public function getUrl($url, $options = [])
+    {
+        return $this->request('get', $url, ['query' => $options]);
+    }
+
+    // PUT
+
+    public function put($fields = [])
+    {
+        return $this->putUrl($this->endpoint, ['json' => $fields]);
+    }
+
+    public function putUrl($url, $options = [])
     {
         return $this->request('put', $url, $options);
+    }
+
+    // POST
+
+    public function post($fields = [])
+    {
+        return $this->postUrl($this->endpoint, ['json' => $fields]);
+    }
+
+    public function postUrl($url, $options = [])
+    {
+        return $this->request('post', $url, $options);
     }
 
     public function request($method, $url, $options = [])
@@ -48,7 +71,7 @@ class ApiClient {
         catch (RequestException $e) {
             $response = $e->hasResponse() ? $e->getResponse() : '';
 
-            // TODO: Log this info, do not put it in the exception (as it might leak in a dev version etc)
+            // TODO: Log this info, do not putUrl it in the exception (as it might leak in a dev version etc)
 
             throw new ApiException('Request failed: ' . $e->getRequest() . "\nResponse: " . $response);
         }
@@ -110,13 +133,5 @@ class ApiClient {
         $this->fields = $fields;
     }
 
-    public function update()
-    {
-        return $this->put($this->endpoint, $this->fields);
-    }
 
-    public function create()
-    {
-        return $this->post($this->endpoint, $this->fields);
-    }
 }
