@@ -31,6 +31,23 @@ class AtomxClient extends ApiClient {
             $this->id = $idOrFields;
     }
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+
     protected function handleResponse(Response $response)
     {
         // TODO: Handle an invalid token/not logged in message
@@ -98,11 +115,11 @@ class AtomxClient extends ApiClient {
 
     public static function find($store, $id)
     {
-        $campaign = new Campaign($store);
+        $model = new static($store);
 
         if (is_array($id))
             $id = implode(',', $id);
 
-        return $campaign->get(['id' => $id]);
+        return $model->get(['id' => $id]);
     }
 }

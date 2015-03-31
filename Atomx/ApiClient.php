@@ -133,5 +133,4 @@ class ApiClient {
         $this->fields = $fields;
     }
 
-
 }
