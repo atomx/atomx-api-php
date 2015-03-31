@@ -6,14 +6,21 @@ use InvalidArgumentException;
 class Campaign extends AtomxClient {
     protected $endpoint = 'campaign';
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
     public function setAdvertiserId($id)
     {
         $this->advertiser_id = $id;
     }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function setStartTime($time)
+    {
+        $this->start_time = $time;
+    }
+
     /**
      * @param $state State of the campaign (active/inactive)
      */
