@@ -6,6 +6,14 @@ use InvalidArgumentException;
 class Campaign extends AtomxClient {
     protected $endpoint = 'campaign';
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    public function setAdvertiserId($id)
+    {
+        $this->advertiser_id = $id;
+    }
     /**
      * @param $state State of the campaign (active/inactive)
      */
@@ -27,8 +35,8 @@ class Campaign extends AtomxClient {
 
     public function setDailyBudget($dailyBudget)
     {
-        $this->budget_cap_amount = $dailyBudget / 24;
-        $this->budget_cap_per    = 86400 / 24;
+        $this->budget_cap_amount = $dailyBudget;
+        $this->budget_cap_pacing = 'ASAP';
     }
 
     public function setBidType($type)
