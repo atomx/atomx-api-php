@@ -114,12 +114,12 @@ class ApiClient {
             $response->getStatusCode() . ' Body: ' . $response->getBody()->getContents());
     }
 
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         $this->fields[$name] = $value;
     }
 
-    function __get($name)
+    public function __get($name)
     {
         if (isset($this->fields[$name]))
             return $this->fields[$name];
