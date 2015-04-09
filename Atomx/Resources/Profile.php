@@ -5,6 +5,11 @@ use Atomx\AtomxClient;
 class Profile extends AtomxClient {
     protected $endpoint = 'profile';
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     // Targeting
     public function setCountryTargeting($action, $countries)
     {
