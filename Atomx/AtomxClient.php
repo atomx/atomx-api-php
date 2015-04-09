@@ -22,6 +22,8 @@ class AtomxClient extends ApiClient {
     {
         parent::__construct();
 
+        assert(isset($this->apiBase), 'Set the API endpoint before continuing');
+
         $this->accountStore = $accountStore;
 
 

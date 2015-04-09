@@ -3,6 +3,8 @@
 use Atomx\AtomxClient;
 
 class Profile extends AtomxClient {
+    protected $endpoint = 'profile';
+
     // Targeting
     public function setCountryTargeting($action, $countries)
     {
