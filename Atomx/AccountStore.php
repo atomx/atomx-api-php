@@ -6,4 +6,6 @@ interface AccountStore {
     public function getPassword();
     public function getToken();
     public function storeToken($token);
+
+    public function getApiBase();
 }

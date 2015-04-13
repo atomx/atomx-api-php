@@ -1,15 +1,14 @@
 <?php namespace Atomx;
 
-use Atomx\Resources\Campaign;
 use Exception;
 use GuzzleHttp\Message\Response;
+
 /*
  * TODO: Ability to sync back from atomx to DA
  */
 
 class AtomxClient extends ApiClient {
-    //protected $apiBase = 'http://api.atomx.com/v1/';
-    protected $apiBase = 'http://192.168.56.102:6543/v1/';
+    protected $apiBase = null;
     protected $id = null;
 
     /**
@@ -21,6 +20,8 @@ class AtomxClient extends ApiClient {
     function __construct(AccountStore $accountStore, $idOrFields = null)
     {
         parent::__construct();
+
+        $this->apiBase = $accountStore->getApiBase();
 
         assert(isset($this->apiBase), 'Set the API endpoint before continuing');
 
