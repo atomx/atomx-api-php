@@ -1,3 +1,5 @@
 .idea/
 vendor/
+atomx.php
+Atomx/MemoryAccountStore.php
 
