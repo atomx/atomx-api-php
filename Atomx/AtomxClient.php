@@ -80,13 +80,13 @@ class AtomxClient extends ApiClient {
         $this->shouldSendToken = true;
 
         if ($response['success'] !== true)
-            throw new ApiException('Unable to login into Atomx API. Error: ' . $response['error']);
+            throw new ApiException($response['error']);
 
         $token = $response['auth_tkt'] . '!userid_type:int';
 
         $this->accountStore->storeToken($token);
 
-        return $token;
+        return $response['user'];
     }
 
     private function getToken()
@@ -97,7 +97,9 @@ class AtomxClient extends ApiClient {
             return $token;
         }
 
-        return $this->login();
+        $this->login();
+
+        return $this->accountStore->getToken();
     }
 
     public function update()
