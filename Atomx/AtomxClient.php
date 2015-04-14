@@ -19,11 +19,9 @@ class AtomxClient extends ApiClient {
 
     function __construct(AccountStore $accountStore, $idOrFields = null)
     {
-        parent::__construct();
-
         $this->apiBase = $accountStore->getApiBase();
 
-        assert(isset($this->apiBase), 'Set the API endpoint before continuing');
+        parent::__construct();
 
         $this->accountStore = $accountStore;
 
@@ -54,7 +52,6 @@ class AtomxClient extends ApiClient {
     protected function handleResponse(Response $response)
     {
         // TODO: Handle an invalid token/not logged in message
-        // Probably disable exceptions and interpret the status code ourselves
         return json_decode(parent::handleResponse($response), true);
     }
 
@@ -68,7 +65,7 @@ class AtomxClient extends ApiClient {
         return $options;
     }
 
-    private function login()
+    public function login()
     {
         $this->shouldSendToken = false;
 
