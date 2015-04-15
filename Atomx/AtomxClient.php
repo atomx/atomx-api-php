@@ -124,4 +124,11 @@ class AtomxClient extends ApiClient {
 
         return $model->get(['id' => $id]);
     }
+
+    public static function all($store)
+    {
+        $model = new static($store);
+
+        return $model->get();
+    }
 }
