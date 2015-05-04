@@ -9,6 +9,14 @@ class Advertiser extends AtomxClient {
         $this->name = $name;
     }
 
+    public function setState($state)
+    {
+        if (!in_array($state, ['ACTIVE', 'INACTIVE']))
+            throw new InvalidArgumentException('API: Trying to set an invalid state for the advertiser');
+
+        $this->state = $state;
+    }
+
     public function setBudget($budget)
     {
         $budget = intval($budget);
