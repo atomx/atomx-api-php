@@ -13,7 +13,10 @@ class Profile extends AtomxClient {
     // Targeting
     public function setCountryTargeting($action, $countries)
     {
-        $this->countries_filter_action = $action;
+        if (!in_array($action, ['include', 'exclude']))
+            throw new InvalidArgumentException('API: Invalid bid type provided');
+
+        $this->countries_filter_action = strtoupper($action);
         $this->countries_filter        = $countries;
     }
 

@@ -4,6 +4,8 @@ use Atomx\AtomxClient;
 use InvalidArgumentException;
 
 class Advertiser extends AtomxClient {
+    protected $endpoint = 'advertiser';
+
     public function setName($name)
     {
         $this->name = $name;
@@ -11,10 +13,10 @@ class Advertiser extends AtomxClient {
 
     public function setState($state)
     {
-        if (!in_array($state, ['ACTIVE', 'INACTIVE']))
+        if (!in_array($state, ['active', 'inactive']))
             throw new InvalidArgumentException('API: Trying to set an invalid state for the advertiser');
 
-        $this->state = $state;
+        $this->state = strtoupper($state);
     }
 
     public function setBudget($budget)
