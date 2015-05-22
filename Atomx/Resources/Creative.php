@@ -6,9 +6,11 @@ use InvalidArgumentException;
 class Creative extends AtomxClient {
     protected $endpoint = 'creative';
 
-    /**
-     * @param $state State of the creative (active/inactive)
-     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     public function setState($state)
     {
         if (!in_array($state, ['active', 'inactive']))
@@ -47,13 +49,41 @@ class Creative extends AtomxClient {
         if (!in_array($contentType, ['image', 'flash', 'iframe', 'javascript', 'vast']))
                 throw new InvalidArgumentException('API: Invalid banner contentType provided');
 
-        $this->contentType = strtoupper($contentType);
+        $this->content_type = strtoupper($contentType);
     }
 
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
 
-    // url
-    // javascript
-    // title
-    // mopup
-    // click_url
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
+    public function setClickUrl($clickUrl)
+    {
+        $this->click_url = $clickUrl;
+    }
+
+    public function setJavascript($js)
+    {
+        $this->javascript = $js;
+    }
+
+    public function setMopup($mopup)
+    {
+        $this->mopup = $mopup;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 }

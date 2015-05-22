@@ -21,9 +21,6 @@ class Campaign extends AtomxClient {
         $this->start_time = $time;
     }
 
-    /**
-     * @param $state State of the campaign (active/inactive)
-     */
     public function setState($state)
     {
         if (!in_array($state, ['active', 'inactive']))
