@@ -54,12 +54,17 @@ class Creative extends AtomxClient {
 
     public function setCategory($category)
     {
-        $this->category = $category;
+        $this->category_id = $category;
     }
 
     public function setAttributes($attributes)
     {
         $this->attributes = $attributes;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 
     public function setUrl($url)
@@ -85,5 +90,15 @@ class Creative extends AtomxClient {
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    public function setExtension($ext)
+    {
+        $this->extension = $ext;
+    }
+
+    public function setSize($size)
+    {
+        $this->size_id = $size;
     }
 }
