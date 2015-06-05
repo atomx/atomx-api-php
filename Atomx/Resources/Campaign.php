@@ -61,7 +61,7 @@ class Campaign extends AtomxClient {
 
     public function setCreatives($activeCreatives, $inactiveCreatives)
     {
-        $this->active_creatives   = $activeCreatives;
-        $this->inactive_creatives = $inactiveCreatives;
+        $this->creatives_active   = $activeCreatives;
+        $this->creatives_inactive = $inactiveCreatives;
     }
 }
