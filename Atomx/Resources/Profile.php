@@ -30,7 +30,23 @@ class Profile extends AtomxClient {
     // Dayparting times_filter[_action] [start: Nth minute of the week, end: Nth minute of the week]
 
     // Techno targeting {browser,device,operating_system}_filter[_action]
+    public function setDeviceTargeting($action, $devices)
+    {
+        $this->device_types_filter_action = strtoupper($action);
+        $this->device_types_filter        = $devices;
+    }
+
+    public function setOSTargeting($action, $oses)
+    {
+        $this->operating_systems_filter_action = strtoupper($action);
+        $this->operating_systems_filter        = $oses;
+    }
+
+    public function setBrowserTargeting($action, $browsers)
+    {
+        $this->browsers_filter_action = strtoupper($action);
+        $this->browsers_filter        = $browsers;
+    }
 
     // Domain targeting domains_filter[_action]
-
 }
