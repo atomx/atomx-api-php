@@ -3,10 +3,6 @@
 use Exception;
 use GuzzleHttp\Message\Response;
 
-/*
- * TODO: Ability to sync back from atomx to DA
- */
-
 class AtomxClient extends ApiClient {
     protected $apiBase = null;
     protected $id = null;

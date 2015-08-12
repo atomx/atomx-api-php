@@ -1,9 +1,13 @@
 <?php namespace Atomx\Resources;
 
 use Atomx\AtomxClient;
+use Atomx\Resources\Traits\NameTrait;
+use Atomx\Resources\Traits\StateTrait;
 use InvalidArgumentException;
 
 class Advertiser extends AtomxClient {
+    use NameTrait, StateTrait;
+
     protected $endpoint = 'advertiser';
 
     public function setName($name)

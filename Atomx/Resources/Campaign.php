@@ -1,9 +1,13 @@
 <?php namespace Atomx\Resources;
 
 use Atomx\AtomxClient;
+use Atomx\Resources\Traits\NameTrait;
+use Atomx\Resources\Traits\StateTrait;
 use InvalidArgumentException;
 
 class Campaign extends AtomxClient {
+    use NameTrait, StateTrait;
+
     protected $endpoint = 'campaign';
 
     public function setAdvertiserId($id)
@@ -63,5 +67,10 @@ class Campaign extends AtomxClient {
     {
         $this->creatives_active   = $activeCreatives;
         $this->creatives_inactive = $inactiveCreatives;
+    }
+
+    public function setConversionPixels($pixels)
+    {
+        $this->conversion_pixels_active = $pixels;
     }
 }

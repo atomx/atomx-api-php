@@ -1,15 +1,13 @@
 <?php namespace Atomx\Resources;
 
 use Atomx\AtomxClient;
+use Atomx\Resources\Traits\NameTrait;
 use InvalidArgumentException;
 
 class Profile extends AtomxClient {
-    protected $endpoint = 'profile';
+    use NameTrait;
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+    protected $endpoint = 'profile';
 
     // Targeting
     public function setCountryTargeting($action, $countries)
