@@ -16,6 +16,6 @@ class ConversionPixel extends AtomxClient {
 
     public function setDurationInDays($days)
     {
-        $this->setDurationSeconds($days * 60 * 60 * 24);
+        $this->setDuration($days * 60 * 60 * 24);
     }
 }
