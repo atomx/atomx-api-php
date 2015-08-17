@@ -32,9 +32,11 @@ class ApiClient {
         return $this->getUrl($this->endpoint, $options);
     }
 
-    public function getUrl($url, $options = [])
+    public function getUrl($url, $query = [], $options = [])
     {
-        return $this->request('get', $url, ['query' => $options]);
+        $options['query'] = $query;
+
+        return $this->request('get', $url, $options);
     }
 
     // PUT
