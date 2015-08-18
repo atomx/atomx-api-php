@@ -2,6 +2,7 @@
 
 use Exception;
 use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\Stream;
 
 class AtomxClient extends ApiClient {
     protected $apiBase = null;
@@ -72,6 +73,10 @@ class AtomxClient extends ApiClient {
             ]);
         } catch (ApiException $e) {
             throw new ApiException('Unable to login to API!');
+        }
+
+        if ($response instanceof Stream) {
+            $response = json_decode($response->getContents(), true);
         }
 
         $this->shouldSendToken = true;
