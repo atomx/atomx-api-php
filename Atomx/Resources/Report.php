@@ -32,17 +32,16 @@ class Report extends AtomxClient {
     public function download($report)
     {
         $reportId = $report['report']['id'];
-        $stream = Stream::factory();
 
         $this->returnStream = true;
 
         $stream = $this->getUrl('report/' . $reportId, [], [
-//            'save_to' => $stream,
 //            'timeout'         => 0,
 //            'connect_timeout' => 0
         ]);
 
         $this->returnStream = false;
+
         return new ReportStreamer($stream);
     }
 
