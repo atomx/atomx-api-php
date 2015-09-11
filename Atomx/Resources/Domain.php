@@ -6,9 +6,9 @@ use InvalidArgumentException;
 class Domain extends AtomxClient {
     protected $endpoint = 'domain';
 
-    public function setLanguage($lan = 'en')
+    public function setLanguage($lan = null)
     {
-        if(empty($lan)) $lan = 'en';
+        if(empty($lan)) $lan = null;
         $this->language_id = $lan;
     }
 
