@@ -50,6 +50,7 @@ class Creative extends AtomxClient {
 
     public function setAttributes($attributes)
     {
+        $attributes = ($attributes) ? $attributes : [];
         $this->attributes = $attributes;
     }
 
