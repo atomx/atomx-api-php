@@ -1,23 +1,14 @@
 <?php namespace Atomx\Resources;
 
 use Atomx\AtomxClient;
+use Atomx\Resources\Traits\NameTrait;
+use Atomx\Resources\Traits\StateTrait;
 use InvalidArgumentException;
 
 class Creative extends AtomxClient {
+    use NameTrait, StateTrait;
+
     protected $endpoint = 'creative';
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function setState($state)
-    {
-        if (!in_array($state, ['active', 'inactive']))
-            throw new InvalidArgumentException('API: Invalid state provided');
-
-        $this->state = strtoupper($state);
-    }
 
     public function setBanner($filename, $extension)
     {
@@ -101,5 +92,11 @@ class Creative extends AtomxClient {
     public function setSize($size)
     {
         $this->size_id = $size;
+    }
+
+    public function setbanned($banned_id)
+    {
+        //if(!is_int($banned_id)) return;
+        $this->banned_id = $banned_id;
     }
 }
