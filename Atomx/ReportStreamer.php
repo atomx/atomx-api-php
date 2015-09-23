@@ -14,7 +14,8 @@ class ReportStreamer {
     public function __construct(Stream $stream, $report = null)
     {
         if (!is_null($report)) {
-            $this->columns = array_merge($report['report']['groups'], (isset($report['report']['sums']) ? $report['report']['sums'] : $report['report']['metrics']));
+            $sumsOrMetrics = (isset($report['report']['sums']) ? $report['report']['sums'] : $report['report']['metrics']);
+            $this->columns = array_merge($report['report']['groups'], $sumsOrMetrics);
             $this->count = $report['report']['count'];
         }
 

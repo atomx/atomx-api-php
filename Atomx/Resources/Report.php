@@ -53,7 +53,7 @@ class Report extends AtomxClient {
             if ($this->returnStream == true)
                 return $stream;
             else
-                return $stream->getContents();
+                return parent::handleResponse($response);
         }
 
         throw new ApiException('Request failed, received the following status: ' .
