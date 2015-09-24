@@ -6,19 +6,10 @@ use GuzzleHttp\Stream\Stream;
 
 class ReportStreamer {
     private $stream;
-
     private $overflow = '';
-    private $columns = [];
-    private $count = 0;
 
     public function __construct(Stream $stream, $report = null)
     {
-        if (!is_null($report)) {
-            $sumsOrMetrics = (isset($report['report']['sums']) ? $report['report']['sums'] : $report['report']['metrics']);
-            $this->columns = array_merge($report['report']['groups'], $sumsOrMetrics);
-            $this->count = $report['report']['count'];
-        }
-
         $this->stream = $stream;
     }
 

@@ -20,10 +20,38 @@ class Report extends AtomxClient {
         return $this->getUrl('report/' . $reportId, ['status' => true]);
     }
 
-    public function isReady($report)
+    public static function getReportId($report)
+    {
+        if (isset($report['report']['id'])) {
+            return $report['report']['id'];
+        }
+
+        return false;
+    }
+
+    public static function isReady($report)
     {
         if (isset($report['report']['is_ready'])) {
             return $report['report']['is_ready'];
+        }
+
+        return false;
+    }
+
+    public static function numberOfRows($report)
+    {
+        if (isset($report['report']['lines']))
+            return $report['report']['lines'];
+
+        return false;
+    }
+
+    public static function getColumns($report)
+    {
+        if (!is_null($report) && isset($report['query'])) {
+            $sumsOrMetrics = (isset($report['query']['sums']) ? $report['query']['sums'] : $report['query']['metrics']);
+
+            return array_merge($report['query']['groups'], $sumsOrMetrics);
         }
 
         return false;
