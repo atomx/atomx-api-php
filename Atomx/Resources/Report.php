@@ -73,6 +73,23 @@ class Report extends AtomxClient {
         return new ReportStreamer($stream);
     }
 
+    public function runAndDownload($json, $timeout = 120)
+    {
+        $reportData = $this->run($json);
+
+        $secondsWaiting = 0;
+
+        while (!Report::isReady($this->status(Report::getReportId($reportData)))) {
+            sleep(1);
+
+            if (++$secondsWaiting >= $timeout) {
+                return false;
+            }
+        }
+
+        return $this->download($reportData);
+    }
+
     protected function handleResponse(Response $response)
     {
         if ($response->getStatusCode() == 200) {

@@ -58,6 +58,29 @@ class ReportTest extends \PHPUnit_Framework_TestCase {
         var_dump($imps, $revenue);
     }
 
+    public function testRunAndDownloadReport()
+    {
+        $from = date('Y-m-d 00:00:00', time() - 24 * 60 * 60);
+        $to = date('Y-m-d 00:00:00', time());
+
+        $report = new Report(new AtomxAccountStore());
+        $options = array(
+            'scope'    => 'advertiser',
+            'groups'   => ['campaign_id', 'domain_id', 'day_timestamp'],
+            'sums'     => ['impressions', 'clicks', 'conversions', 'campaign_cost'],
+            'where'    => [['advertiser_network_id', '==', '1']],
+            'from'     => $from,
+            'to'       => $to,
+            'timezone' => 'UTC'
+        );
+
+        $streamer = $report->runAndDownload($options, 1);
+
+        $this->assertNotEquals(false, $streamer);
+
+        var_dump($streamer->readLine());
+    }
+
     /**
      * @return array
      */
