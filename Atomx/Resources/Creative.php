@@ -94,9 +94,8 @@ class Creative extends AtomxClient {
         $this->size_id = $size;
     }
 
-    public function setbanned($banned_id)
+    public function setBanned($banned_id)
     {
-        //if(!is_int($banned_id)) return;
         $this->banned_id = $banned_id;
     }
 }
