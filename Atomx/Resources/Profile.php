@@ -19,10 +19,10 @@ class Profile extends AtomxClient {
         $this->countries_filter        = $countries;
     }
 
-    public function setFrequencyCap($capping)
+    public function setFrequencyCap($capping, $per = 86400)
     {
         $this->impression_frequency_cap_amount = $capping;
-        $this->impression_frequency_cap_per    = 86400;
+        $this->impression_frequency_cap_per    = $per;
     }
 
     // Dayparting times_filter[_action] [start: Nth minute of the week, end: Nth minute of the week]

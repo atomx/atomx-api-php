@@ -41,13 +41,10 @@ class Campaign extends AtomxClient {
         $this->budget = $amount;
     }
 
-    public function setDailyBudget($dailyBudget, $pacing = 'ASAP')
+    public function setDailyBudget($dailyBudget, $per = 86400)
     {
-        if (!in_array($pacing, ['ASAP', 'EVEN']))
-            throw new InvalidArgumentException('API: Invalid pacing provided: ' . $pacing);
-
         $this->daily_budget_amount = $dailyBudget;
-        $this->daily_budget_pacing = $pacing;
+        $this->daily_budget_per    = $per;
     }
 
     public function setBidType($type)
