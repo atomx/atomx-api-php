@@ -98,4 +98,9 @@ class Creative extends AtomxClient {
     {
         $this->banned_id = $banned_id;
     }
+
+    public function setAuditedAt($audited_at)
+    {
+        $this->audited_at = $audited_at;
+    }
 }
