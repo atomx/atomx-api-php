@@ -74,7 +74,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase {
             'timezone' => 'UTC'
         );
 
-        $streamer = $report->runAndDownload($options, 1);
+        $streamer = $report->runAndDownload($options);
 
         $this->assertNotEquals(false, $streamer);
 

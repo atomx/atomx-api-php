@@ -46,5 +46,21 @@ class Profile extends AtomxClient {
         $this->browsers_filter        = $browsers;
     }
 
-    // Domain targeting domains_filter[_action]
+    public function setNetworkTargeting($action, $networks)
+    {
+        $this->network_filter        = strtoupper($networks);
+        $this->network_filter_action = $action;
+    }
+
+    public function setPublisherTargeting($action, $publishers)
+    {
+        $this->publishers_filter        = strtoupper($publishers);
+        $this->publishers_filter_action = $action;
+    }
+
+    public function setDomainTargeting($action, $domains)
+    {
+        $this->domains_filter        = strtoupper($domains);
+        $this->domains_filter_action = $action;
+    }
 }
