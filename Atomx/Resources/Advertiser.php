@@ -23,6 +23,11 @@ class Advertiser extends AtomxClient {
         $this->state = strtoupper($state);
     }
 
+    public function setNetwork($id)
+    {
+        $this->network_id = $id;
+    }
+
     public function setBudget($budget)
     {
         $budget = intval($budget);
