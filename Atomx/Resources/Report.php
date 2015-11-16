@@ -73,7 +73,7 @@ class Report extends AtomxClient {
         return new ReportStreamer($stream);
     }
 
-    public function runAndDownload($json, $timeout = 120)
+    public function runAndDownload($json, $timeout = 120, $returnReportId = false)
     {
         $reportData = $this->run($json);
 
@@ -87,7 +87,10 @@ class Report extends AtomxClient {
             }
         }
 
-        return $this->download($reportData);
+        if ($returnReportId)
+            return [$this->download($reportData), Report::getReportId($reportData)];
+        else
+            return $this->download($reportData);
     }
 
     protected function handleResponse(Response $response)
