@@ -34,16 +34,14 @@ class Profile extends AtomxClient {
         $this->device_types_filter        = $devices;
     }
 
-    public function setOSTargeting($action, $oses)
+    public function setOSTargeting($oses)
     {
-        $this->operating_systems_filter_action = strtoupper($action);
-        $this->operating_systems_filter        = $oses;
+        $this->operating_systems_filter = $oses;
     }
 
-    public function setBrowserTargeting($action, $browsers)
+    public function setBrowserTargeting($browsers)
     {
-        $this->browsers_filter_action = strtoupper($action);
-        $this->browsers_filter        = $browsers;
+        $this->browsers_filter = $browsers;
     }
 
     public function setNetworkTargeting($action, $networks)
