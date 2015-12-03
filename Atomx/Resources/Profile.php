@@ -46,8 +46,8 @@ class Profile extends AtomxClient {
 
     public function setNetworkTargeting($action, $networks)
     {
-        $this->network_filter        = $networks;
-        $this->network_filter_action = strtoupper($action);
+        $this->networks_filter        = $networks;
+        $this->networks_filter_action = strtoupper($action);
     }
 
     public function setPublisherTargeting($action, $publishers)
