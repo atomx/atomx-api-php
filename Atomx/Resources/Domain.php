@@ -23,7 +23,4 @@ class Domain extends AtomxClient {
         if(!isset($att)) $att = [];
         $this->attributes = $att;
     }
-
-
-
 }
