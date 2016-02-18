@@ -21,8 +21,20 @@ class Profile extends AtomxClient {
 
     public function setFrequencyCap($capping, $per = 86400)
     {
-        $this->impression_frequency_cap_amount = $capping;
-        $this->impression_frequency_cap_per    = $per;
+        $this->setUserFrequencyCap($capping, $per);
+        $this->setIpFrequencyCap($capping, $per);
+    }
+
+    public function setUserFrequencyCap($capping, $per = 86400)
+    {
+        $this->user_impression_frequency_cap_amount = $capping;
+        $this->user_impression_frequency_cap_per    = $per;
+    }
+
+    public function setIpFrequencyCap($capping, $per = 86400)
+    {
+        $this->ip_impression_frequency_cap_amount = $capping;
+        $this->ip_impression_frequency_cap_per    = $per;
     }
 
     // Dayparting times_filter[_action] [start: Nth minute of the week, end: Nth minute of the week]
