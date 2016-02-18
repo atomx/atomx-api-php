@@ -52,7 +52,7 @@ class Campaign extends AtomxClient {
         if (!in_array($type, ['CPM', 'dCPM', 'CPC', 'CPA']))
             throw new InvalidArgumentException('API: Invalid bid type provided');
 
-        $this->pricemodel = $type;
+        $this->pricemodel = strtoupper($type);
     }
 
     public function setBidPrice($price)
