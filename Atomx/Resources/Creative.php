@@ -59,6 +59,13 @@ class Creative extends AtomxClient {
         $this->content = $content;
     }
 
+    public function setBans($bans)
+    {
+        if (!is_array($bans)) return;
+
+        $this->bans = $bans;
+    }
+
     public function setUrl($url)
     {
         $this->url = $url;
