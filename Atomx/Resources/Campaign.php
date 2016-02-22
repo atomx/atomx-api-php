@@ -70,4 +70,9 @@ class Campaign extends AtomxClient {
     {
         $this->conversion_pixels_active = $pixels;
     }
+
+    public function setBrokerFee($percentage)
+    {
+        $this->brokerfee = $percentage;
+    }
 }
