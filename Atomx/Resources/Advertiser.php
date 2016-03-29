@@ -32,9 +32,6 @@ class Advertiser extends AtomxClient {
     {
         $budget = intval($budget);
 
-        if ($budget <= 0)
-            throw new InvalidArgumentException('API: Trying to set an advertiser budget to unlimited (0)');
-
         $this->budget = $budget;
     }
 
