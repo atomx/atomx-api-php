@@ -85,4 +85,10 @@ class Profile extends AtomxClient {
         $this->domain_attributes_filter = $attributes;
         $this->domain_attributes_filter_action = strtoupper($action);
     }
+
+    public function setConnectionTypeTargeting($action, $types)
+    {
+        $this->connection_types_filter = $types;
+        $this->connection_types_filter_action = strtoupper($action);
+    }
 }
