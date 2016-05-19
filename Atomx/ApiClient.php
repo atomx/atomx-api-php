@@ -73,12 +73,9 @@ class ApiClient {
         catch (RequestException $e) {
             $response = $e->hasResponse() ? "\nResponse: " . $e->getResponse() : '';
 
-            // TODO: Log this info, do not putUrl it in the exception (as it might leak in a dev version etc)
-
-            throw new ApiException('Request failed: ' . $e->getRequest() . $response);
+            throw new ApiException("Request failed: " . $e->getMessage() . "\nRequest:" . $e->getRequest() . $response);
         }
 
-        // TODO: Be able to reuse the field? or create a new Client every time?
         $this->clearFields();
 
         return $this->handleResponse($response);
