@@ -22,6 +22,16 @@ class ReportTest extends \PHPUnit_Framework_TestCase {
 
         $report = $report->run($options);
 
-        $this->assertEquals(['day', 'campaign_id', 'creative_id', 'country_id','impressions', 'clicks', 'conversions', 'campaign_cost', 'advertiser_network_profit'], $report->readLine());
+        $this->assertEquals([
+            'day',
+            'campaign_id',
+            'creative_id',
+            'country_id',
+            'impressions',
+            'clicks',
+            'conversions',
+            'campaign_cost',
+            'advertiser_network_profit'
+        ], $report->readLine());
     }
 }
