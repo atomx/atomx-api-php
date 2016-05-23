@@ -9,88 +9,18 @@ use GuzzleHttp\Stream\Stream;
 class Report extends AtomxClient {
     private $returnStream = false;
 
-    // Run report
-    public function run($json)
+    public function run($json, $timeout = 600)
     {
-        return $this->postUrl('report', compact('json'));
-    }
-
-    public function status($reportId)
-    {
-        return $this->getUrl('report/' . $reportId, ['status' => true]);
-    }
-
-    public static function getReportId($report)
-    {
-        if (isset($report['report']['id'])) {
-            return $report['report']['id'];
-        }
-
-        return false;
-    }
-
-    public static function isReady($report)
-    {
-        if (isset($report['report']['is_ready'])) {
-            return $report['report']['is_ready'];
-        }
-
-        return false;
-    }
-
-    public static function numberOfRows($report)
-    {
-        if (isset($report['report']['lines']))
-            return $report['report']['lines'];
-
-        return false;
-    }
-
-    public static function getColumns($report)
-    {
-        if (!is_null($report) && isset($report['query'])) {
-            $sumsOrMetrics = (isset($report['query']['sums']) ? $report['query']['sums'] : $report['query']['metrics']);
-
-            return array_merge($report['query']['groups'], $sumsOrMetrics);
-        }
-
-        return false;
-    }
-
-    public function download($report)
-    {
-        $reportId = $report['report']['id'];
-
         $this->returnStream = true;
 
-        $stream = $this->getUrl('report/' . $reportId, [], [
-//            'timeout'         => 0,
-//            'connect_timeout' => 0
+        $stream = $this->postUrl('report?download', compact('json'), [
+            'timeout'         => $timeout,
+            'connect_timeout' => 20
         ]);
 
         $this->returnStream = false;
 
         return new ReportStreamer($stream);
-    }
-
-    public function runAndDownload($json, $timeout = 120, $returnReportId = false)
-    {
-        $reportData = $this->run($json);
-
-        $secondsWaiting = 0;
-
-        while (!Report::isReady($this->status(Report::getReportId($reportData)))) {
-            sleep(1);
-
-            if (++$secondsWaiting >= $timeout) {
-                return false;
-            }
-        }
-
-        if ($returnReportId)
-            return [$this->download($reportData), Report::getReportId($reportData)];
-        else
-            return $this->download($reportData);
     }
 
     protected function handleResponse(Response $response)
