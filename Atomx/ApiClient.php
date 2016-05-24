@@ -89,8 +89,7 @@ class ApiClient {
     {
         $defaultOptions = $this->getDefaultOptions();
 
-        // TODO: Use a merge that overrides already set values
-        $options = array_merge_recursive($defaultOptions, $options);
+        $options = array_replace_recursive($defaultOptions, $options);
 
         return $options;
     }

@@ -13,7 +13,8 @@ class Report extends AtomxClient {
     {
         $this->returnStream = true;
 
-        $stream = $this->postUrl('report?download', compact('json'), [
+        $stream = $this->postUrl('report?download', [
+            'json'            => $json,
             'timeout'         => $timeout,
             'connect_timeout' => 20
         ]);
