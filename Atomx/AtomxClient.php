@@ -67,9 +67,11 @@ class AtomxClient extends ApiClient {
         $this->shouldSendToken = false;
 
         try {
-            $response = $this->getUrl('login', [
-                'email'    => $this->accountStore->getUsername(),
-                'password' => $this->accountStore->getPassword()
+            $response = $this->postUrl('login', [
+                'json' => [
+                    'email'    => $this->accountStore->getUsername(),
+                    'password' => $this->accountStore->getPassword()
+                ]
             ]);
         } catch (ApiException $e) {
             throw new ApiException('Unable to login to API!');
