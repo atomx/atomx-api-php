@@ -74,6 +74,12 @@ class Profile extends AtomxClient {
         $this->domains_filter_action = strtoupper($action);
     }
 
+    public function setDomainCategoryTargeting($action, $categories)
+    {
+        $this->domain_categories_filter         = $categories;
+        $this->domain_categories_filter_action  = strtoupper($action);
+    }
+
     public function setRequestAttributeTargeting($action, $attributes)
     {
         $this->request_attributes_filter = $attributes;
