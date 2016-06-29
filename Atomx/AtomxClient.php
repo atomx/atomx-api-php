@@ -85,7 +85,9 @@ class AtomxClient extends ApiClient {
                 ]
             ]);
         } catch (ApiException $e) {
-            throw new ApiException('Unable to login to API!');
+            $message = str_replace($e->getMessage(), $this->accountStore->getPassword(), '[redacted]');
+
+            throw new ApiException('Unable to login to API! Message: ' . $message);
         }
 
         $this->requiresLogin = true;
