@@ -7,12 +7,12 @@ use GuzzleHttp\Stream\Stream;
 class AtomxClient extends ApiClient {
     protected $apiBase = null;
     protected $id = null;
+    protected $requiresLogin = true;
 
     /**
      * @var AccountStore Store the token for the application
      */
     private $accountStore;
-    private $shouldSendToken = true;
 
     function __construct(AccountStore $accountStore, $idOrFields = null)
     {
@@ -48,23 +48,34 @@ class AtomxClient extends ApiClient {
 
     protected function handleResponse(Response $response)
     {
-        // TODO: Handle an invalid token/not logged in message
-        return json_decode(parent::handleResponse($response), true);
+        $code = $response->getStatusCode();
+
+        if ($code == 200) {
+            return json_decode($response->getBody()->getContents(), true);
+        }
+
+        if ($code == 401) {
+            // Unauthorized, invalidate token
+            $this->accountStore->storeToken(null);
+        }
+
+        throw new ApiException('Request failed, received the following status: ' .
+            $response->getStatusCode() . ' Body: ' . $response->getBody()->getContents());
     }
 
     protected function getDefaultOptions()
     {
         $options = parent::getDefaultOptions();
 
-        if ($this->shouldSendToken)
-            $options['headers'] = ['Authorization' => $this->getToken()];
+        if ($this->requiresLogin)
+            $options['headers'] = ['Authorization' => 'Bearer ' . $this->getToken()];
 
         return $options;
     }
 
     public function login()
     {
-        $this->shouldSendToken = false;
+        $this->requiresLogin = false;
 
         try {
             $response = $this->postUrl('login', [
@@ -77,17 +88,17 @@ class AtomxClient extends ApiClient {
             throw new ApiException('Unable to login to API!');
         }
 
+        $this->requiresLogin = true;
+
         if ($response instanceof Stream) {
             $response = json_decode($response->getContents(), true);
         }
-
-        $this->shouldSendToken = true;
 
         if ($response['success'] !== true)
             throw new ApiException('Unable to login to API!');
 
 
-        $token = 'Bearer ' . $response['auth_token'];
+        $token = $response['auth_token'];
 
         $this->accountStore->storeToken($token);
 

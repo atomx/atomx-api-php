@@ -5,6 +5,7 @@ use InvalidArgumentException;
 
 class Domain extends AtomxClient {
     protected $endpoint = 'domain';
+    protected $requiresLogin = false;
 
     public function setLanguage($lan = null)
     {
