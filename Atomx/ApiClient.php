@@ -20,6 +20,11 @@ class ApiClient {
         $this->client = new Client(['base_url' => $this->apiBase]);
     }
 
+    public function getClient()
+    {
+        return $this->client;
+    }
+
     public function clearFields()
     {
         $this->fields = [];
