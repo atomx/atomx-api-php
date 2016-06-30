@@ -27,12 +27,7 @@ class MemoryAccountStore implements AccountStore {
     public function getToken()
     {
         if (is_null($this->token)) {
-            $response = $this->getLoginClient()->login([
-                'email' => $this->getUsername(),
-                'password' => $this->getPassword(),
-            ]);
-
-            $this->token = $response['auth_token'];
+            $this->storeToken($this->getTokenFromLogin());
         }
 
         return $this->token;
@@ -41,6 +36,16 @@ class MemoryAccountStore implements AccountStore {
     protected function getLoginClient()
     {
         return new Login($this);
+    }
+
+    protected function getTokenFromLogin()
+    {
+        $response = $this->getLoginClient()->login([
+            'email' => $this->getUsername(),
+            'password' => $this->getPassword(),
+        ]);
+
+        return $response['auth_token'];
     }
 
     /**
