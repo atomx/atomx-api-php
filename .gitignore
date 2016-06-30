@@ -1,6 +1,5 @@
 .idea/
 vendor/
 atomx.php
-Atomx/MemoryAccountStore.php
 tests/AtomxAccountStore.php
 

@@ -2,14 +2,16 @@
 
 use Atomx\AccountStore;
 use Atomx\ApiException;
+use Atomx\MemoryAccountStore;
 use Atomx\Resources\Advertiser;
 use Atomx\Resources\Domain;
+use Atomx\Resources\Login;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Subscriber\Mock;
 
-class MemoryAccountStore implements AccountStore {
+class TestAccountStore implements AccountStore {
     private $token = 'TEST_TOKEN';
 
     public function getToken() { return $this->token; }
@@ -19,10 +21,15 @@ class MemoryAccountStore implements AccountStore {
     public function getApiBase() { return 'https://api.atomx.com/v3/'; }
 }
 
+class TestLoginAccountStore extends MemoryAccountStore {
+    private $loginClient;
+    public function setLoginClient($client) { $this->loginClient = $client; }
+    protected function getLoginClient() { return $this->loginClient; }
+}
 class ClientTest extends \PHPUnit_Framework_TestCase {
     public function testDiscardInvalidToken()
     {
-        $store = new MemoryAccountStore();
+        $store = new TestAccountStore();
         $advertiser = new Advertiser($store);
 
         $mock = new Mock([
@@ -40,7 +47,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequestWithoutLogin()
     {
-        $store = new MemoryAccountStore();
+        $store = new TestAccountStore();
         $domain = new Domain($store);
 
         $history = new History();
@@ -56,7 +63,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequestWithAuthToken()
     {
-        $store = new MemoryAccountStore();
+        $store = new TestAccountStore();
         $advertiser = new Advertiser($store);
 
         $history = new History();
@@ -70,10 +77,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertArraySubset(['Authorization' => ['Bearer TEST_TOKEN']], $history->getLastRequest()->getHeaders());
     }
 
+
     public function testLogin()
     {
-        $store = new MemoryAccountStore();
-        $store->storeToken(null);
+        $login = new Login(new TestAccountStore);
+
+        $store = new TestLoginAccountStore();
+        $store->setLoginClient($login);
 
         $advertiser = new Advertiser($store);
 
@@ -82,6 +92,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
             $this->getValidLoginResponse(),
             $this->getValidEmptyResponse()
         ]);
+
+        $login->getClient()->getEmitter()->attach($mock);
+        $login->getClient()->getEmitter()->attach($history);
 
         $advertiser->getClient()->getEmitter()->attach($mock);
         $advertiser->getClient()->getEmitter()->attach($history);

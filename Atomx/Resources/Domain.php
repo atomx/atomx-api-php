@@ -1,11 +1,10 @@
 <?php namespace Atomx\Resources;
 
 use Atomx\AtomxClient;
-use InvalidArgumentException;
 
 class Domain extends AtomxClient {
     protected $endpoint = 'domain';
-    protected $requiresLogin = false;
+    protected $requiresToken = false;
 
     public function setLanguage($lan = null)
     {
