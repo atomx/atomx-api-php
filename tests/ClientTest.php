@@ -7,6 +7,7 @@ use Atomx\MemoryAccountStore;
 use Atomx\Resources\Advertiser;
 use Atomx\Resources\Domain;
 use Atomx\Resources\Login;
+use Atomx\Resources\Totp;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
@@ -110,7 +111,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertArraySubset(['Authorization' => ['Bearer LOGIN_TOKEN']], $history->getLastRequest()->getHeaders());
     }
 
-    public function testTotp()
+    public function testTotpAccountStore()
     {
         $login = new Login(new TestAccountStore);
 
@@ -132,15 +133,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $advertiser->getClient()->getEmitter()->attach($history);
 
         $totpException = false;
+        $token = '';
 
         try {
             $advertiser->get(['limit' => 1, 'depth' => 0]);
         } catch (TotpRequiredException $e) {
             $totpException = true;
+            $token = $e->getResponse()['auth_token'];
         }
 
         $this->assertTrue($totpException);
-        $this->assertEquals('TOTP_TOKEN', $store->getToken());
+        $this->assertEquals('TOTP_TOKEN', $token);
     }
 
     private function getValidEmptyResponse()

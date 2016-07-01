@@ -1,20 +1,23 @@
 <?php namespace Atomx;
 
+use Atomx\Exceptions\TotpRequiredException;
 use Atomx\Resources\Login;
 
 class MemoryAccountStore implements AccountStore {
     protected $token = null;
-    protected $username, $password, $apiBase;
+    protected $username, $password, $totp, $apiBase;
 
     /**
-     * @param string $username
-     * @param string $password
-     * @param string $apiBase
+     * @param string|null $username
+     * @param string|null $password
+     * @param string|null $totp
+     * @param string|null $apiBase
      */
-    public function __construct($username = null, $password = null, $apiBase = null)
+    public function __construct($username = null, $password = null, $totp = null, $apiBase = null)
     {
         $this->username = $username;
         $this->password = $password;
+        $this->totp = $totp;
         $this->apiBase = $apiBase;
 
         if ($this->apiBase == null)
@@ -22,7 +25,7 @@ class MemoryAccountStore implements AccountStore {
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getToken()
     {
@@ -43,7 +46,11 @@ class MemoryAccountStore implements AccountStore {
         $response = $this->getLoginClient()->login([
             'email' => $this->getUsername(),
             'password' => $this->getPassword(),
+            'totp' => $this->getTotp()
         ]);
+
+        if ($response['totp_required'])
+            throw new TotpRequiredException($response);
 
         return $response['auth_token'];
     }
@@ -70,6 +77,11 @@ class MemoryAccountStore implements AccountStore {
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function getTotp()
+    {
+        return $this->totp;
     }
 
     /**

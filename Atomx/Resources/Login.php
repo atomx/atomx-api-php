@@ -20,7 +20,7 @@ class Login extends AtomxClient {
             $message = $e->getMessage();
 
             if (isset($fields['password']))
-                $message = str_replace($this->accountStore->getPassword(), '[redacted]', $message);
+                $message = str_replace($fields['password'], '[redacted]', $message);
 
             throw new ApiException('Unable to login to API! Message: ' . $message);
         }
