@@ -1,10 +1,9 @@
 <?php namespace Atomx\Resources;
 
-use Atomx\ApiException;
+use Atomx\Exceptions\ApiException;
 use Atomx\AtomxClient;
 use Atomx\ReportStreamer;
 use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
 
 class Report extends AtomxClient {
     private $returnStream = false;

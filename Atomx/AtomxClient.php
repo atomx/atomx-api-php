@@ -1,5 +1,6 @@
 <?php namespace Atomx;
 
+use Atomx\Exceptions\ApiException;
 use Exception;
 use GuzzleHttp\Message\Response;
 

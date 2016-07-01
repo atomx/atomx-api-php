@@ -1,6 +1,6 @@
 <?php namespace Atomx\Resources;
 
-use Atomx\ApiException;
+use Atomx\Exceptions\ApiException;
 use Atomx\AtomxClient;
 
 class Login extends AtomxClient {

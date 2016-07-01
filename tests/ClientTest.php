@@ -1,7 +1,8 @@
 <?php namespace tests;
 
 use Atomx\AccountStore;
-use Atomx\ApiException;
+use Atomx\Exceptions\ApiException;
+use Atomx\Exceptions\TotpRequiredException;
 use Atomx\MemoryAccountStore;
 use Atomx\Resources\Advertiser;
 use Atomx\Resources\Domain;
@@ -26,6 +27,7 @@ class TestLoginAccountStore extends MemoryAccountStore {
     public function setLoginClient($client) { $this->loginClient = $client; }
     protected function getLoginClient() { return $this->loginClient; }
 }
+
 class ClientTest extends \PHPUnit_Framework_TestCase {
     public function testDiscardInvalidToken()
     {
@@ -106,7 +108,39 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $loginRequest = $history->getIterator()[0]['request'];
         $this->assertArrayNotHasKey('Authorization', $loginRequest->getHeaders());
         $this->assertArraySubset(['Authorization' => ['Bearer LOGIN_TOKEN']], $history->getLastRequest()->getHeaders());
+    }
 
+    public function testTotp()
+    {
+        $login = new Login(new TestAccountStore);
+
+        $store = new TestLoginAccountStore();
+        $store->setLoginClient($login);
+
+        $advertiser = new Advertiser($store);
+
+        $history = new History();
+        $mock = new Mock([
+            $this->getValidLoginResponse(true),
+            $this->getValidEmptyResponse()
+        ]);
+
+        $login->getClient()->getEmitter()->attach($mock);
+        $login->getClient()->getEmitter()->attach($history);
+
+        $advertiser->getClient()->getEmitter()->attach($mock);
+        $advertiser->getClient()->getEmitter()->attach($history);
+
+        $totpException = false;
+
+        try {
+            $advertiser->get(['limit' => 1, 'depth' => 0]);
+        } catch (TotpRequiredException $e) {
+            $totpException = true;
+        }
+
+        $this->assertTrue($totpException);
+        $this->assertEquals('TOTP_TOKEN', $store->getToken());
     }
 
     private function getValidEmptyResponse()
@@ -114,10 +148,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
       return new Response(200, [], Stream::factory("[]"));
     }
 
-    private function getValidLoginResponse()
+    private function getValidLoginResponse($totp = false)
     {
-        $loginBody = '{"user":{"id":1},"resource":"auth_token","totp_required":false,' .
-            '"message":"atomx (user id 1) logged in","success":true,"auth_token":"LOGIN_TOKEN"}';
+        $token = $totp ? 'TOTP_TOKEN' : 'LOGIN_TOKEN';
+        $loginBody = '{"user":{"id":1},"resource":"auth_token","totp_required":' . var_export($totp, true) . ',' .
+            '"message":"atomx (user id 1) logged in","success":true,"auth_token":"' . $token . '"}';
 
         return new Response(200,
             ['Content-Type' => 'application/json; charset=UTF-8'],
