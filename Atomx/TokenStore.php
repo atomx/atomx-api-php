@@ -1,7 +1,7 @@
 <?php namespace Atomx;
 
 
-interface AccountStore {
+interface TokenStore {
     public function getToken();
     public function storeToken($token);
 

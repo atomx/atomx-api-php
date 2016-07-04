@@ -3,7 +3,7 @@
 use Atomx\Exceptions\TotpRequiredException;
 use Atomx\Resources\Login;
 
-class LoginAccountStore implements AccountStore {
+class LoginTokenStore implements TokenStore {
     protected $token = null;
     protected $username, $password, $totp, $apiBase;
 

@@ -1,11 +1,10 @@
 <?php namespace tests;
 
-use Atomx\AccountStore;
+use Atomx\TokenStore;
 use Atomx\Exceptions\ApiException;
 use Atomx\Exceptions\TotpRequiredException;
-use Atomx\LoginAccountStore;
+use Atomx\LoginTokenStore;
 use Atomx\Resources\Advertiser;
-use Atomx\Resources\Browsers;
 use Atomx\Resources\Domain;
 use Atomx\Resources\Login;
 use GuzzleHttp\Message\Response;
@@ -13,7 +12,7 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Subscriber\Mock;
 
-class TestAccountStore implements AccountStore {
+class TestTokenStore implements TokenStore {
     private $token = 'TEST_TOKEN';
 
     public function getToken() { return $this->token; }
@@ -23,7 +22,7 @@ class TestAccountStore implements AccountStore {
     public function getApiBase() { return 'https://api.atomx.com/v3/'; }
 }
 
-class TestLoginAccountStore extends LoginAccountStore {
+class TestLoginTokenStore extends LoginTokenStore {
     private $loginClient;
     public function setLoginClient($client) { $this->loginClient = $client; }
     protected function getLoginClient() { return $this->loginClient; }
@@ -41,7 +40,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testDiscardInvalidToken()
     {
-        $store = new TestAccountStore();
+        $store = new TestTokenStore();
         $advertiser = new Advertiser($store);
 
         $mock = new Mock([
@@ -59,7 +58,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequestWithoutLogin()
     {
-        $store = new TestAccountStore();
+        $store = new TestTokenStore();
         $domain = new Domain($store);
 
         $history = new History();
@@ -75,7 +74,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequestWithAuthToken()
     {
-        $store = new TestAccountStore();
+        $store = new TestTokenStore();
         $advertiser = new Advertiser($store);
 
         $history = new History();
@@ -92,9 +91,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testLogin()
     {
-        $login = new Login(new TestAccountStore);
+        $login = new Login(new TestTokenStore);
 
-        $store = new TestLoginAccountStore();
+        $store = new TestLoginTokenStore();
         $store->setLoginClient($login);
 
         $advertiser = new Advertiser($store);
@@ -122,9 +121,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testTotpAccountStore()
     {
-        $login = new Login(new TestAccountStore);
+        $login = new Login(new TestTokenStore);
 
-        $store = new TestLoginAccountStore();
+        $store = new TestLoginTokenStore();
         $store->setLoginClient($login);
 
         $advertiser = new Advertiser($store);

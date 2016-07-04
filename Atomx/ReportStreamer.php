@@ -1,6 +1,6 @@
 <?php namespace Atomx;
 
-use Atomx\AccountStore;
+use Atomx\TokenStore;
 use GuzzleHttp\Stream\Stream;
 
 

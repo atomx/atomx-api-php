@@ -11,13 +11,13 @@ class AtomxClient extends ApiClient {
     protected $requiresToken = true;
 
     /**
-     * @var AccountStore Store the token for the application
+     * @var TokenStore Store the token for the application
      */
     protected $accountStore = null;
 
     /**
      * AtomxClient constructor.
-     * @param AccountStore|null $accountStore
+     * @param TokenStore|null $accountStore
      * @param int|array $idOrFields
      * @param string $apiBase
      */
