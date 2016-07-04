@@ -1,7 +1,9 @@
 {
   "name": "atomx/atomx-api-php",
   "description": "PHP Api for the atomx exchange.",
+  "license": "MIT",
   "require": {
+    "php": ">=5.5.0",
     "guzzlehttp/guzzle": "~5.2"
   },
   "require-dev": {
@@ -11,5 +13,7 @@
     "psr-4": {
       "Atomx\\": "Atomx/"
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
