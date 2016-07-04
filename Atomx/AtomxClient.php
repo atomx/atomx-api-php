@@ -13,21 +13,21 @@ class AtomxClient extends ApiClient {
     /**
      * @var TokenStore Store the token for the application
      */
-    protected $accountStore = null;
+    protected $tokenStore = null;
 
     /**
      * AtomxClient constructor.
-     * @param TokenStore|null $accountStore
+     * @param TokenStore|null $tokenStore
      * @param int|array $idOrFields
      * @param string $apiBase
      */
-    function __construct($accountStore = null, $idOrFields = null)
+    function __construct($tokenStore = null, $idOrFields = null)
     {
-        if ($accountStore) {
-            $this->accountStore = $accountStore;
-            $this->apiBase = $accountStore->getApiBase();
+        if ($tokenStore) {
+            $this->tokenStore = $tokenStore;
+            $this->apiBase = $tokenStore->getApiBase();
         } else if ($this->requiresToken) {
-            throw new \InvalidArgumentException("{$this->endpoint} endpoint requires an AccountStore for the token");
+            throw new \InvalidArgumentException("{$this->endpoint} endpoint requires a TokenStore for the token");
         } else {
             $this->apiBase = AtomxClient::API_BASE;
         }
@@ -67,7 +67,7 @@ class AtomxClient extends ApiClient {
 
         if ($code == 401 && $this->requiresToken) {
             // Unauthorized, invalidate token
-            $this->accountStore->storeToken(null);
+            $this->tokenStore->storeToken(null);
         }
 
         throw new ApiException('Request failed, received the following status: ' .
@@ -86,7 +86,7 @@ class AtomxClient extends ApiClient {
 
     private function getToken()
     {
-        return $this->accountStore->getToken();
+        return $this->tokenStore->getToken();
     }
 
     public function update()

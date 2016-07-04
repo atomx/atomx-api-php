@@ -119,7 +119,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertArraySubset(['Authorization' => ['Bearer LOGIN_TOKEN']], $history->getLastRequest()->getHeaders());
     }
 
-    public function testTotpAccountStore()
+    public function testTotpTokenStore()
     {
         $login = new Login(new TestTokenStore);
 
