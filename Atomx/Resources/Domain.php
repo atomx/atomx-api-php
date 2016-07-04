@@ -4,7 +4,6 @@ use Atomx\AtomxClient;
 
 class Domain extends AtomxClient {
     protected $endpoint = 'domain';
-    protected $requiresToken = false;
 
     public function setLanguage($lan = null)
     {
