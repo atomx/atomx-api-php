@@ -1,27 +1,38 @@
 <?php namespace Atomx;
 
+use Atomx\Exceptions\ApiException;
 use Exception;
 use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
 
 class AtomxClient extends ApiClient {
+    const API_BASE = 'https://api.atomx.com/v3/';
     protected $apiBase = null;
     protected $id = null;
+    protected $requiresToken = true;
 
     /**
-     * @var AccountStore Store the token for the application
+     * @var TokenStore Store the token for the application
      */
-    private $accountStore;
-    private $shouldSendToken = true;
+    protected $accountStore = null;
 
-    function __construct(AccountStore $accountStore, $idOrFields = null)
+    /**
+     * AtomxClient constructor.
+     * @param TokenStore|null $accountStore
+     * @param int|array $idOrFields
+     * @param string $apiBase
+     */
+    function __construct($accountStore = null, $idOrFields = null)
     {
-        $this->apiBase = $accountStore->getApiBase();
+        if ($accountStore) {
+            $this->accountStore = $accountStore;
+            $this->apiBase = $accountStore->getApiBase();
+        } else if ($this->requiresToken) {
+            throw new \InvalidArgumentException("{$this->endpoint} endpoint requires an AccountStore for the token");
+        } else {
+            $this->apiBase = AtomxClient::API_BASE;
+        }
 
         parent::__construct();
-
-        $this->accountStore = $accountStore;
-
 
         if (is_array($idOrFields))
             $this->fields = $idOrFields;
@@ -48,62 +59,33 @@ class AtomxClient extends ApiClient {
 
     protected function handleResponse(Response $response)
     {
-        // TODO: Handle an invalid token/not logged in message
-        return json_decode(parent::handleResponse($response), true);
+        $code = $response->getStatusCode();
+
+        if ($code == 200) {
+            return json_decode($response->getBody()->getContents(), true);
+        }
+
+        if ($code == 401 && $this->requiresToken) {
+            // Unauthorized, invalidate token
+            $this->accountStore->storeToken(null);
+        }
+
+        throw new ApiException('Request failed, received the following status: ' .
+            $response->getStatusCode() . ' Body: ' . $response->getBody()->getContents());
     }
 
     protected function getDefaultOptions()
     {
         $options = parent::getDefaultOptions();
 
-        if ($this->shouldSendToken)
-            $options['headers'] = ['Authorization' => $this->getToken()];
+        if ($this->requiresToken)
+            $options['headers'] = ['Authorization' => 'Bearer ' . $this->getToken()];
 
         return $options;
     }
 
-    public function login()
-    {
-        $this->shouldSendToken = false;
-
-        try {
-            $response = $this->postUrl('login', [
-                'json' => [
-                    'email'    => $this->accountStore->getUsername(),
-                    'password' => $this->accountStore->getPassword()
-                ]
-            ]);
-        } catch (ApiException $e) {
-            throw new ApiException('Unable to login to API!');
-        }
-
-        if ($response instanceof Stream) {
-            $response = json_decode($response->getContents(), true);
-        }
-
-        $this->shouldSendToken = true;
-
-        if ($response['success'] !== true)
-            throw new ApiException('Unable to login to API!');
-
-
-        $token = 'Bearer ' . $response['auth_token'];
-
-        $this->accountStore->storeToken($token);
-
-        return $response['user'];
-    }
-
     private function getToken()
     {
-        $token = $this->accountStore->getToken();
-
-        if ($token !== null) {
-            return $token;
-        }
-
-        $this->login();
-
         return $this->accountStore->getToken();
     }
 

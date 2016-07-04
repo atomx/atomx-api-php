@@ -4,4 +4,5 @@ use Atomx\AtomxClient;
 
 class CategoryList extends AtomxClient {
     protected $endpoint = 'categories';
+    protected $requiresToken = false;
 }

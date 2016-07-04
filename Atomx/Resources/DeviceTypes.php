@@ -5,4 +5,5 @@ use Atomx\AtomxClient;
 
 class DeviceTypes extends AtomxClient {
     protected $endpoint = 'device-types';
+    protected $requiresToken = false;
 }
