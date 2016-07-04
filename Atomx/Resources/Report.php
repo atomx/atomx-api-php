@@ -23,6 +23,11 @@ class Report extends AtomxClient {
         return new ReportStreamer($stream);
     }
 
+    /**
+     * @param Response $response
+     * @return \GuzzleHttp\Stream\StreamInterface|mixed|null|string
+     * @throws ApiException
+     */
     protected function handleResponse(Response $response)
     {
         if ($response->getStatusCode() == 200) {

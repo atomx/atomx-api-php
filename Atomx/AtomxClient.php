@@ -26,6 +26,8 @@ class AtomxClient extends ApiClient {
         if ($accountStore) {
             $this->accountStore = $accountStore;
             $this->apiBase = $accountStore->getApiBase();
+        } else if ($this->requiresToken) {
+            throw new \InvalidArgumentException("{$this->endpoint} endpoint requires an AccountStore for the token");
         } else {
             $this->apiBase = AtomxClient::API_BASE;
         }

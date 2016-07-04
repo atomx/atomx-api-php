@@ -4,6 +4,7 @@ use Atomx\Exceptions\ApiException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\StreamInterface;
 
 class ApiClient {
     protected $endpoint;
@@ -64,6 +65,12 @@ class ApiClient {
         return $this->postUrl($this->endpoint, ['json' => $fields]);
     }
 
+    /**
+     * @param $url
+     * @param array $options
+     * @return string|StreamInterface
+     * @throws ApiException
+     */
     public function postUrl($url, $options = [])
     {
         return $this->request('post', $url, $options);
@@ -133,7 +140,6 @@ class ApiClient {
 
     public function fill($fields)
     {
-        // TODO: Merge with the other fields
         $this->fields = $fields;
     }
 

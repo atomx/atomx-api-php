@@ -3,11 +3,11 @@
 use Atomx\AccountStore;
 use Atomx\Exceptions\ApiException;
 use Atomx\Exceptions\TotpRequiredException;
-use Atomx\MemoryAccountStore;
+use Atomx\LoginAccountStore;
 use Atomx\Resources\Advertiser;
+use Atomx\Resources\Browsers;
 use Atomx\Resources\Domain;
 use Atomx\Resources\Login;
-use Atomx\Resources\Totp;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
@@ -23,13 +23,22 @@ class TestAccountStore implements AccountStore {
     public function getApiBase() { return 'https://api.atomx.com/v3/'; }
 }
 
-class TestLoginAccountStore extends MemoryAccountStore {
+class TestLoginAccountStore extends LoginAccountStore {
     private $loginClient;
     public function setLoginClient($client) { $this->loginClient = $client; }
     protected function getLoginClient() { return $this->loginClient; }
 }
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testTokenEndpointWithoutAS()
+    {
+        new Advertiser();
+    }
+
+
     public function testDiscardInvalidToken()
     {
         $store = new TestAccountStore();
