@@ -1,5 +1,7 @@
 <?php namespace Atomx\Resources\Traits;
 
+use InvalidArgumentException;
+
 /**
  * Set the state of a resource
  */
