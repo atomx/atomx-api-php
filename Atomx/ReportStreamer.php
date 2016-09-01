@@ -1,16 +1,21 @@
 <?php namespace Atomx;
 
-use Atomx\TokenStore;
 use GuzzleHttp\Stream\Stream;
 
 
-class ReportStreamer {
+class ReportStreamer
+{
     private $stream;
     private $overflow = '';
+    protected $columns = [];
+    protected $line;
 
-    public function __construct(Stream $stream, $report = null)
+    public function __construct(Stream $stream, $hasColumns = true)
     {
         $this->stream = $stream;
+
+        if ($hasColumns)
+            $this->readColumns();
     }
 
     public function getOverflow()
@@ -34,16 +39,38 @@ class ReportStreamer {
         }
 
         if ($break !== false) {
-            if (strlen($buffer) > $break+1)
-                $this->overflow = substr($buffer, $break+1);
+            if (strlen($buffer) > $break + 1)
+                $this->overflow = substr($buffer, $break + 1);
 
             $buffer = substr($buffer, 0, $break);
         }
-        $line = str_getcsv($buffer, "\t");
 
-        if (count($line) == 0)
+        if (empty($buffer))
             return false;
 
+        $line = str_getcsv($buffer, "\t");
+
         return $line;
+    }
+
+    protected function readColumns()
+    {
+        // Read the first line of columns
+        $this->line = $this->readLine();
+
+        if ($this->line)
+            $this->columns = array_flip($this->line);
+    }
+
+    public function __get($column)
+    {
+        return $this->line[$this->columns[$column]];
+    }
+
+    public function next()
+    {
+        $this->line = $this->readLine();
+
+        return !!$this->line;
     }
 }

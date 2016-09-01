@@ -2,4 +2,5 @@
 vendor/
 atomx.php
 tests/AtomxAccountStore.php
+tests/ReportTest.php
 
