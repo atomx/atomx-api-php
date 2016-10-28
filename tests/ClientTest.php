@@ -56,22 +56,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($store->getToken());
     }
 
-    public function testRequestWithoutLogin()
-    {
-        $store = new TestTokenStore();
-        $domain = new Domain($store);
-
-        $history = new History();
-        $mock = new Mock([ $this->getValidEmptyResponse() ]);
-
-        $domain->getClient()->getEmitter()->attach($mock);
-        $domain->getClient()->getEmitter()->attach($history);
-
-        $domain->get(['limit' => 1, 'depth' => 0]);
-
-        $this->assertArrayNotHasKey('Authorization', $history->getLastRequest()->getHeaders());
-    }
-
     public function testRequestWithAuthToken()
     {
         $store = new TestTokenStore();
@@ -87,7 +71,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertArraySubset(['Authorization' => ['Bearer TEST_TOKEN']], $history->getLastRequest()->getHeaders());
     }
-
 
     public function testLogin()
     {

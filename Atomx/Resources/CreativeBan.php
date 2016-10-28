@@ -3,7 +3,6 @@
 use Atomx\AtomxClient;
 
 class CreativeBan extends AtomxClient {
-
     protected $endpoint = 'creative_ban';
 
     public function setUrl($url)

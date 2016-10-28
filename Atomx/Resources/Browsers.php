@@ -5,5 +5,4 @@ use Atomx\AtomxClient;
 
 class Browsers extends AtomxClient {
     protected $endpoint = 'browsers';
-    protected $requiresToken = false;
 }
