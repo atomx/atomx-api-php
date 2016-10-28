@@ -3,8 +3,7 @@
 use Atomx\AtomxClient;
 
 class Totp extends AtomxClient {
-    protected $endpoint      = 'totp';
-    protected $requiresToken = true;
+    protected $endpoint = 'totp';
 
     public function send($totp)
     {

@@ -33,7 +33,7 @@ class ReportStreamerTest extends \PHPUnit_Framework_TestCase {
 
     public function testNextAndColumns()
     {
-        $stream = Stream::factory(fopen('files/report.tsv', 'rb'));
+        $stream = Stream::factory(fopen('tests/files/report.tsv', 'rb'));
 
         $streamer = new ReportStreamer($stream);
 

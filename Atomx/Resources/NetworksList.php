@@ -4,5 +4,4 @@ use Atomx\AtomxClient;
 
 class NetworksList extends AtomxClient {
     protected $endpoint = 'networks_list';
-    protected $requiresToken = false;
 }
