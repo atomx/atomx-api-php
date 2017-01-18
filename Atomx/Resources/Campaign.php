@@ -60,15 +60,15 @@ class Campaign extends AtomxClient {
         $this->bid = $price;
     }
 
+    // inactiveCreatives is deprecated.
     public function setCreatives($activeCreatives, $inactiveCreatives)
     {
-        $this->creatives_active   = $activeCreatives;
-        $this->creatives_inactive = $inactiveCreatives;
+        $this->creatives = $activeCreatives;
     }
 
     public function setConversionPixels($pixels)
     {
-        $this->conversion_pixels_active = $pixels;
+        $this->conversion_pixels = $pixels;
     }
 
     public function setBrokerFee($percentage)
