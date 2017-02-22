@@ -19,7 +19,7 @@ class ApiClient {
      */
     function __construct()
     {
-        $this->client = new Client(['base_url' => $this->apiBase]);
+        $this->client = new Client(['base_uri' => $this->apiBase]);
     }
 
     public function getClient()
