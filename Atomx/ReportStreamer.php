@@ -1,7 +1,8 @@
 <?php namespace Atomx;
 
-use GuzzleHttp\Stream\Stream;
 
+
+use GuzzleHttp\Psr7\Stream;
 
 class ReportStreamer
 {

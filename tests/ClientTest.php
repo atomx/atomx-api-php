@@ -7,10 +7,11 @@ use Atomx\LoginTokenStore;
 use Atomx\Resources\Advertiser;
 use Atomx\Resources\Domain;
 use Atomx\Resources\Login;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
-use GuzzleHttp\Subscriber\History;
-use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
 class TestTokenStore implements TokenStore {
     private $token = 'TEST_TOKEN';
@@ -37,17 +38,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         new Advertiser();
     }
 
-
     public function testDiscardInvalidToken()
     {
-        $store = new TestTokenStore();
-        $advertiser = new Advertiser($store);
-
-        $mock = new Mock([
-            "HTTP/1.1 401 Unknown Error\r\nContent-Length: 55\r\n\r\n{\"success\":false,\"error\":\"User unauthorized\",\"errno\":1}"
+        $mock = new MockHandler([
+            new Response(401, [], "{\"success\":false,\"error\":\"User unauthorized\",\"errno\":1}")
         ]);
 
-        $advertiser->getClient()->getEmitter()->attach($mock);
+        $handler = HandlerStack::create($mock);
+
+        $store = new TestTokenStore();
+        $advertiser = new Advertiser($store, null, $handler);
 
         try {
             $advertiser->get(['limit' => 1, 'depth' => 0]);
@@ -58,70 +58,66 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequestWithAuthToken()
     {
+        $historyContainer = [];
+        $history = Middleware::history($historyContainer);
+        $mock = new MockHandler([ $this->getValidEmptyResponse() ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+
         $store = new TestTokenStore();
-        $advertiser = new Advertiser($store);
-
-        $history = new History();
-        $mock = new Mock([ $this->getValidEmptyResponse() ]);
-
-        $advertiser->getClient()->getEmitter()->attach($mock);
-        $advertiser->getClient()->getEmitter()->attach($history);
+        $advertiser = new Advertiser($store, null, $handler);
 
         $advertiser->get(['limit' => 1, 'depth' => 0]);
 
-        $this->assertArraySubset(['Authorization' => ['Bearer TEST_TOKEN']], $history->getLastRequest()->getHeaders());
+        $this->assertCount(1, $historyContainer);
+        $request = $historyContainer[0]['request'];
+        $this->assertEquals('Bearer TEST_TOKEN', $request->getHeaderLine('Authorization'));
     }
-
     public function testLogin()
     {
-        $login = new Login(new TestTokenStore);
-
-        $store = new TestLoginTokenStore();
-        $store->setLoginClient($login);
-
-        $advertiser = new Advertiser($store);
-
-        $history = new History();
-        $mock = new Mock([
+        $historyContainer = [];
+        $history = Middleware::history($historyContainer);
+        $mock = new MockHandler([
             $this->getValidLoginResponse(),
             $this->getValidEmptyResponse()
         ]);
 
-        $login->getClient()->getEmitter()->attach($mock);
-        $login->getClient()->getEmitter()->attach($history);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
 
-        $advertiser->getClient()->getEmitter()->attach($mock);
-        $advertiser->getClient()->getEmitter()->attach($history);
-
-        $advertiser->get(['limit' => 1, 'depth' => 0]);
-
-
-        $this->assertEquals(2, count($history));
-        $loginRequest = $history->getIterator()[0]['request'];
-        $this->assertArrayNotHasKey('Authorization', $loginRequest->getHeaders());
-        $this->assertArraySubset(['Authorization' => ['Bearer LOGIN_TOKEN']], $history->getLastRequest()->getHeaders());
-    }
-
-    public function testTotpTokenStore()
-    {
-        $login = new Login(new TestTokenStore);
+        $login = new Login(new TestTokenStore, null, $handler);
 
         $store = new TestLoginTokenStore();
         $store->setLoginClient($login);
 
-        $advertiser = new Advertiser($store);
+        $advertiser = new Advertiser($store, null, $handler);
 
-        $history = new History();
-        $mock = new Mock([
+        $advertiser->get(['limit' => 1, 'depth' => 0]);
+
+        $this->assertCount(2, $historyContainer);
+        $this->assertArrayNotHasKey('Authorization', $historyContainer[0]['request']->getHeaders());
+        $this->assertArraySubset(['Authorization' => ['Bearer LOGIN_TOKEN']], $historyContainer[1]['request']->getHeaders());
+    }
+
+    public function testTotpTokenStore()
+    {
+        $historyContainer = [];
+        $history = Middleware::history($historyContainer);
+        $mock = new MockHandler([
             $this->getValidLoginResponse(true),
             $this->getValidEmptyResponse()
         ]);
 
-        $login->getClient()->getEmitter()->attach($mock);
-        $login->getClient()->getEmitter()->attach($history);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
 
-        $advertiser->getClient()->getEmitter()->attach($mock);
-        $advertiser->getClient()->getEmitter()->attach($history);
+        $login = new Login(new TestTokenStore, null, $handler);
+
+        $store = new TestLoginTokenStore();
+        $store->setLoginClient($login);
+
+        $advertiser = new Advertiser($store, null, $handler);
 
         $totpException = false;
         $token = '';
@@ -139,7 +135,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
     private function getValidEmptyResponse()
     {
-      return new Response(200, [], Stream::factory("[]"));
+      return new Response(200, [], "[]");
     }
 
     private function getValidLoginResponse($totp = false)
@@ -150,7 +146,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 
         return new Response(200,
             ['Content-Type' => 'application/json; charset=UTF-8'],
-            Stream::factory($loginBody)
+            $loginBody
         );
     }
 }
