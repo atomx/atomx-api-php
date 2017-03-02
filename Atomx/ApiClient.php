@@ -3,7 +3,9 @@
 use Atomx\Exceptions\ApiException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Stream\StreamInterface;
 
 class ApiClient {
@@ -15,11 +17,14 @@ class ApiClient {
     protected $fields = [];
 
     /**
-     * @param array $credentials Contains the API endpoint and the username/password
+     * @param HandlerStack $handler
      */
-    function __construct()
+    function __construct($handler = null)
     {
-        $this->client = new Client(['base_url' => $this->apiBase]);
+        $this->client = new Client([
+            'base_uri' => $this->apiBase,
+            'handler' => $handler]
+        );
     }
 
     public function getClient()
@@ -78,10 +83,9 @@ class ApiClient {
 
     public function request($method, $url, $options = [])
     {
-        $request = $this->client->createRequest($method, $url, $this->getOptions($options));
-
         try {
-            $response = $this->client->send($request);
+            $request = new Request($method, $url);
+            $response = $this->client->send($request, $this->getOptions($options));
         }
         catch (RequestException $e) {
             $response = $e->hasResponse() ? "\nResponse: " . $e->getResponse() : '';
@@ -116,6 +120,11 @@ class ApiClient {
         ];
     }
 
+    /**
+     * @param Response $response
+     * @return mixed
+     * @throws ApiException
+     */
     protected function handleResponse(Response $response)
     {
         if ($response->getStatusCode() == 200)

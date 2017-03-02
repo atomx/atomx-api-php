@@ -2,7 +2,8 @@
 
 use Atomx\Exceptions\ApiException;
 use Exception;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
 class AtomxClient extends ApiClient {
     const API_BASE = 'https://api.atomx.com/v3/';
@@ -19,9 +20,9 @@ class AtomxClient extends ApiClient {
      * AtomxClient constructor.
      * @param TokenStore|null $tokenStore
      * @param int|array $idOrFields
-     * @param string $apiBase
+     * @param HandlerStack $handler
      */
-    function __construct($tokenStore = null, $idOrFields = null)
+    function __construct($tokenStore = null, $idOrFields = null, $handler = null)
     {
         if ($tokenStore) {
             $this->tokenStore = $tokenStore;
@@ -32,7 +33,7 @@ class AtomxClient extends ApiClient {
             $this->apiBase = AtomxClient::API_BASE;
         }
 
-        parent::__construct();
+        parent::__construct($handler);
 
         if (is_array($idOrFields))
             $this->fields = $idOrFields;
@@ -57,6 +58,11 @@ class AtomxClient extends ApiClient {
     }
 
 
+    /**
+     * @param Response $response
+     * @return mixed
+     * @throws ApiException
+     */
     protected function handleResponse(Response $response)
     {
         $code = $response->getStatusCode();

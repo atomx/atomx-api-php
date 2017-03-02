@@ -1,13 +1,12 @@
 <?php namespace tests;
 
-
 use Atomx\ReportStreamer;
-use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Psr7;
 
 class ReportStreamerTest extends \PHPUnit_Framework_TestCase {
     public function testGetLineAndOverflow()
     {
-        $stream = Stream::factory("test\t123\ntest2\t456");
+        $stream = Psr7\stream_for("test\t123\ntest2\t456");
 
         $streamer = new ReportStreamer($stream, false);
 
@@ -20,7 +19,7 @@ class ReportStreamerTest extends \PHPUnit_Framework_TestCase {
 
     public function testBreakEnd()
     {
-        $stream = Stream::factory("col1\tcol2\ntest\t\ntest2\n");
+        $stream = Psr7\stream_for("col1\tcol2\ntest\t\ntest2\n");
 
         $streamer = new ReportStreamer($stream);
 
@@ -33,7 +32,7 @@ class ReportStreamerTest extends \PHPUnit_Framework_TestCase {
 
     public function testNextAndColumns()
     {
-        $stream = Stream::factory(fopen('tests/files/report.tsv', 'rb'));
+        $stream = Psr7\stream_for(fopen('tests/files/report.tsv', 'rb'));
 
         $streamer = new ReportStreamer($stream);
 
@@ -55,7 +54,7 @@ class ReportStreamerTest extends \PHPUnit_Framework_TestCase {
 
     public function testNextWithEmpty()
     {
-        $stream = Stream::factory("");
+        $stream = Psr7\stream_for("");
 
         $streamer = new ReportStreamer($stream);
 
