@@ -5,12 +5,10 @@ use Atomx\Exceptions\ApiException;
 use Atomx\Exceptions\TotpRequiredException;
 use Atomx\LoginTokenStore;
 use Atomx\Resources\Advertiser;
-use Atomx\Resources\Domain;
 use Atomx\Resources\Login;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
 class TestTokenStore implements TokenStore {
