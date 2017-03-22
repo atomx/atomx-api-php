@@ -1,6 +1,5 @@
 <?php namespace Atomx\Resources;
 
-
 use Atomx\AtomxClient;
 
 class ConnectionTypes extends AtomxClient {

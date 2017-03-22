@@ -3,7 +3,7 @@
 use Atomx\Exceptions\ApiException;
 use Atomx\AtomxClient;
 use Atomx\ReportStreamer;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Psr7\Response;
 
 class Report extends AtomxClient {
     private $returnStream = false;
@@ -25,7 +25,7 @@ class Report extends AtomxClient {
 
     /**
      * @param Response $response
-     * @return \GuzzleHttp\Stream\StreamInterface|mixed|null|string
+     * @return \Psr\Http\Message\StreamInterface|mixed|null|string
      * @throws ApiException
      */
     protected function handleResponse(Response $response)
