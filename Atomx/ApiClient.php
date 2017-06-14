@@ -88,9 +88,12 @@ class ApiClient {
             $response = $this->client->send($request, $this->getOptions($options));
         }
         catch (RequestException $e) {
-            $response = $e->hasResponse() ? "\nResponse: " . $e->getResponse() : '';
+            $response = $e->hasResponse() ? "\nResponse: " . $e->getResponseBodySummary($e->getResponse()) : '';
 
-            throw new ApiException("Request failed: " . $e->getMessage() . "\nRequest:" . $e->getRequest() . $response);
+            throw new ApiException("Request failed: " . $e->getMessage() .
+                "\nRequest:" . $e->getRequest()->getBody() .
+                $response
+            );
         }
 
         $this->clearFields();
