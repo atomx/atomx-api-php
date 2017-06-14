@@ -105,4 +105,12 @@ class Creative extends AtomxClient {
     {
         $this->audited_at = $audited_at;
     }
+
+    /**
+     * @param $isHttps bool
+     */
+    public function setHttps($isHttps)
+    {
+        $this->https = $isHttps;
+    }
 }
