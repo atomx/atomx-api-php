@@ -37,7 +37,7 @@ class Creative extends AtomxClient {
 
     public function setContentType($contentType)
     {
-        if (!in_array($contentType, ['image', 'flash', 'iframe', 'javascript', 'vast']))
+        if (!in_array($contentType, ['image', 'flash', 'iframe', 'javascript', 'vast', 'redirect']))
                 throw new InvalidArgumentException('API: Invalid banner contentType provided');
 
         $this->content_type = strtoupper($contentType);
