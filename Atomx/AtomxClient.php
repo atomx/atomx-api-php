@@ -127,4 +127,13 @@ class AtomxClient extends ApiClient {
 
         return $model->get();
     }
+
+    /*
+     * Sets a comment for all PUT and POST requests.
+     * These comments can will be stored in the history.
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
 }
