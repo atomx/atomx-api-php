@@ -113,4 +113,12 @@ class Creative extends AtomxClient {
     {
         $this->https = $isHttps;
     }
+
+    public function setNotify($notify)
+    {
+        if ($notify !== true) {
+            $notify = false;
+        }
+        $this->notify = $notify;
+    }
 }
